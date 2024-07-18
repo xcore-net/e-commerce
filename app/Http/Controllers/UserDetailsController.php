@@ -116,6 +116,8 @@ class UserDetailsController extends Controller
 
         $user_details->delete();
         $billing->delete();
+
+        return redirect()->route('welcome');
         
     }
 }

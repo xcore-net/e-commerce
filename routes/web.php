@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserDetailsController;
 use Illuminate\Support\Facades\Route;
@@ -22,6 +23,15 @@ Route::middleware('auth')->group(function () {
     Route::post('/details/create',[UserDetailsController::class, 'store'])->name('details.store');
     Route::post('/details/update',[UserDetailsController::class, 'update'])->name('details.update');
     Route::delete('/details/delete/{user_details}/{billing}', [UserDetailsController::class, 'destroy'])->name('details.destroy');
+
+    //product
+    Route::get('/product/index',[ProductController::class, 'index'])->name('product.index');
+    Route::get('/product/create',[ProductController::class, 'create'])->name('product.create');
+    Route::get('/product/edit/{product_id}',[ProductController::class, 'edit'])->name('product.edit');
+    Route::post('/product/create',[ProductController::class, 'store'])->name('product.store');
+    Route::post('/product/update/{product_id}',[ProductController::class, 'update'])->name('product.update');
+    Route::delete('/product/delete/{product_id}', [ProductController::class, 'destroy'])->name('product.destroy');
+
 
 
 
