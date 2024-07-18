@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserDetailsController;
@@ -10,7 +11,7 @@ Route::get('/', function () {
 })->name('welcome');
 
 Route::get('/dashboard', function () {
-    return view('dashboard');
+    return view('welcome');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
@@ -31,6 +32,10 @@ Route::middleware('auth')->group(function () {
     Route::post('/product/create',[ProductController::class, 'store'])->name('product.store');
     Route::post('/product/update/{product_id}',[ProductController::class, 'update'])->name('product.update');
     Route::delete('/product/delete/{product_id}', [ProductController::class, 'destroy'])->name('product.destroy');
+
+    //Cart
+    Route::get('/cart/index',[CartController::class, 'index'])->name('cart.index');
+    Route::delete('/cart/delete/{cart_id}', [cartController::class, 'destroy'])->name('cart.destroy');
 
 
 

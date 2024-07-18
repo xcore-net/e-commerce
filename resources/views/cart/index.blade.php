@@ -15,32 +15,30 @@
                     <table class="w-full table-auto  text-white">
                         <thead>
                             <tr >
-                                <th>ID</th>
-                                <th>Title</th>
-                                <th>Description</th>
+                                <th>Product</th>
                                 <th>Price</th>
-                                <th>Image</th>
-                                <th>Amount</th>
+                                <th>amount</th>
                                 <th>Category</th>
-                                <th>Created at</th>
+                                <th>Total Price</th>
                             </tr>
                         </thead>
                         <tbody>
+                            @php
+                                $total_price = 0
+                            @endphp
                             @forelse ($products as $product)
                             <tr  >
-                                <td>{{ $product->id }}</td>
                                 <td>{{ $product->title }}</td>
-                                <td>{{ $product->description }}</td>
                                 <td>{{ $product->price }}</td>
-                                <td>{{ $product->image }}</td>
-                                <td>{{ $product->amount }}</td>
+                                <td>{{ $product->pivot->amount }}</td>
                                 <td>{{ $product->category }}</td>
-                                <td>{{ $product->created_at }}</td>
+                                <td>{{ $product->price*$product->pivot->amount }}</td>
+                                @php
+                                    $total_price += $product->price*$product->pivot->amount
+                                @endphp
                                 <td>
                                     
-                                    <a href="{{ url('/product/edit/' . $product->id ) }}" class="btn btn-xs btn-info pull-right">Edit</a>                                    <!-- Delete Button -->
-
-                                    <form method="POST" action="{{ route('product.destroy', $product->id) }}">
+                                    <form method="POST" action="{{ route('cart.destroy', $product->pivot->id) }}">
                                         @csrf
                                         @method('DELETE')
                                         <x-danger-button class="mt-4" onclick="return confirm('Are you sure you want to delete this product?');">
@@ -61,6 +59,9 @@
                         </tbody>
                     </table>
 
+                <div class="p-6 text-white ">
+                    <b>Total Price : </b>{{ $total_price }}
+                </div>
 
 
                 </div>
