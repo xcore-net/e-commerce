@@ -14,16 +14,11 @@ return new class extends Migration
         Schema::create('order_products', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-
             $table->unsignedBigInteger('order_id');
-
             $table->unsignedBigInteger('product_id');
 
-            $table->foreign('product_id')->references('id')->on('product');
-
-
-
-            $table->foreign('order_id')->references('id')->on('order');
+            $table->foreign('product_id')->references('id')->on('products');
+            $table->foreign('order_id')->references('id')->on('orders');
         });
     }
 

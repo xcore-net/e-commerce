@@ -8,4 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class Billing extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        'type',
+        'number',
+    ];
 }

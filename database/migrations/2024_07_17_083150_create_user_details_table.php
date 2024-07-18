@@ -17,8 +17,10 @@ return new class extends Migration
             $table->string('phone');
             $table->string('address');
             $table->unsignedBigInteger('user_id');
- 
-            $table->foreign('user_id')->references('id')->on('users');
+            $table->unsignedBigInteger('billing_id')->nullable();
+
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('billing_id')->references('id')->on('billings')->onDelete('cascade');
         });
     }
 
@@ -28,5 +30,6 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('user_details');
+        
     }
 };

@@ -18,7 +18,7 @@ return new class extends Migration
             $table->text('desc');
             $table->integer('price');
             $table->integer('amount');
-            $table->enum('cateogry',['cat1','cat2']);
+            $table->enum('category',['cat1','cat2']);
             $table->string('img');
         });
     }
