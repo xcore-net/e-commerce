@@ -11,6 +11,7 @@
                 <div class="p-6 text-gray-900 dark:text-gray-100">
                 </div>
                 <div class=" w-full">
+                    
                     <table class="w-full table-auto  text-white">
                         <thead>
                             <tr >
@@ -61,18 +62,23 @@
                 <div class="p-6 text-white ">
                     <b>Total Price : </b>{{ $total_price }}
                 </div>
+                @if($total_price>0)
                 <div class="p-6 text-white ">
-                    <form action="{{ route('order.add', ['products' => $products]) }}" method="POST">
-                      @csrf
+                    
                       <button type="button" id="placeOrderButton" class="btn btn-primary">Place Order</button>
-                    </form>
+                   
                   </div>
+                  @endif
                   <script>
-                  document.getElementById('placeOrderButton').addEventListener('click', function(event) {
-                    if (!confirm('Are you sure you want to place this order?')) {
-                      event.preventDefault(); // Prevent form submission if not confirmed
-                    }
-                  });</script>
+                        document.getElementById('placeOrderButton').addEventListener('click', function(event) {
+                        if (confirm('Are you sure you want to place this order?')) {
+                            // Redirect to order.add route on confirmation
+                            window.location.href = '/order/add';
+                        } else {
+                            event.preventDefault(); // Prevent form submission if not confirmed
+                        }
+                        });
+                    </script>
 
                 </div>
             </div>
