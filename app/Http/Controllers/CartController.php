@@ -16,14 +16,24 @@ class CartController extends Controller
         $user = Auth::user();
         $carts = Cart::where('user_id', $user->id)->get();
 
-        $cartsWithProducts = $carts->map(function($cart)use($user){
-            $product = $user->products->where('id',$cart->product_id);
-            $cart->title=$product->title;
-            $cart->price=$product->price;
-            $cart->category=$product->category;
+        $cartsWithProducts = $carts->map(function ($cart) use ($user) {
+            $product = $user->products->where('id', $cart->product_id)->first();
+            if ($product) {
+                $cart->title = $product->title;
+                $cart->price = $product->price;
+                $cart->category = $product->category;
+            } else {
+                // Handle the case where the product is not found
+                $cart->title = 'Unknown Product';
+                $cart->price = 0;
+                $cart->category = 'Unknown';
+            }
+            return $cart;
         });
+
         return view('cart.index', ['cartsWithProducts' => $cartsWithProducts]);
     }
+
 
     //show create page
     public function create(): View
@@ -44,12 +54,9 @@ class CartController extends Controller
         // ]);
 
         $cart = Cart::create([
-            'title' => $request->title,
-            'desc' => $request->desc,
-            'price' => $request->price,
+            'user_id' => Auth::user()->id,
+            'product_id' => $request->product_id,
             'amount' => $request->amount,
-            'category' => $request->category,
-            'img' => $request->img,
         ]);
 
         return redirect(route('cart.index', absolute: false));
@@ -78,8 +85,8 @@ class CartController extends Controller
             'title' => $request->title,
             'desc' => $request->desc,
             'price' => $request->price,
-            'amoun' => $request->amount,
-            'cateogry' => $request->cateogory,
+            'amount' => $request->amount,
+            'category' => $request->category,
             'img' => $request->img,
         ]);
 

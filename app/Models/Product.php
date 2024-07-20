@@ -10,10 +10,6 @@ class Product extends Model
 {
     use HasFactory;
 
-    public function users(): BelongsToMany
-    {
-        return $this->belongsToMany(User::class,'carts','product_id','user_id');
-    }
     protected $fillable = [
         'title',
         'desc',
@@ -22,4 +18,14 @@ class Product extends Model
         'cateogory',
         'img',
     ];
+
+    public function users(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'carts', 'product_id', 'user_id');
+    }
+    public function orders(): BelongsToMany
+    {
+        return $this->belongsToMany(Order::class, 'order_products')
+            ->withPivot('amount', 'price');
+    }
 }
