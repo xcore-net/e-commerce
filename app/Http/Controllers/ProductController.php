@@ -6,6 +6,7 @@ use App\Models\Product;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
@@ -25,7 +26,6 @@ class ProductController extends Controller
     //store details
     public function store(Request $request): RedirectResponse
     {
-
         // $request->validate([
         //     'title' => ['required', 'string', 'max:255'],
         //     'desc' => ['required', 'string'],
@@ -35,6 +35,7 @@ class ProductController extends Controller
         //     'img' => ['required', 'string'],
         // ]);
 
+        $path = Storage::putFile('file.jpg', $request->file('img'));
 
         $product = Product::create([
             'title' => $request->title,
@@ -42,7 +43,7 @@ class ProductController extends Controller
             'price' => $request->price,
             'amount' => $request->amount,
             'category' => $request->category,
-            'img' => $request->img,
+            'img' => $path
         ]);
 
 
@@ -57,24 +58,24 @@ class ProductController extends Controller
 
     public function update($id, Request $request):RedirectResponse
     {
-        $request->validate([
-            'title' => ['required', 'string', 'max:255'],
-            'desc' => ['required', 'string'],
-            'price' => ['required', 'in:visa,paypal'],
-            'amount' => ['required', 'integer', 'digits:6'],
-            'category' => ['required', 'string'],
-            'img' => ['required', 'string'],
-        ]);
+        $path = Storage::putFile('chair.jpg', $request->file('img'));
+        // $request->validate([
+        //     'title' => ['required', 'string', 'max:255'],
+        //     'desc' => ['required', 'string'],
+        //     'price' => ['required', 'in:visa,paypal'],
+        //     'amount' => ['required', 'integer', 'digits:6'],
+        //     'category' => ['required', 'string'],
+        // ]);
 
-        $product = Product::find('id', $id);
+        $product = Product::find($id);
 
         $product->update([
             'title' => $request->title,
             'desc' => $request->desc,
             'price' => $request->price,
-            'amoun' => $request->amount,
+            'amount' => $request->amount,
             'cateogry' => $request->cateogory,
-            'img' => $request->img,
+            'img' => $path,
         ]);
 
         return redirect(route('product.index', absolute: false));

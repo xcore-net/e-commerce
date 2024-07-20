@@ -20,7 +20,7 @@
                         <h4>{{ isset($product) ? 'Edit' : 'Create' }} Product</h4>
                     </div>
                     <div class="card-body">
-                        <form action="{{ isset($product) ? route('product.update', $product->id) : route('product.store') }}" method="POST">
+                        <form action="{{ isset($product) ? route('product.update', $product->id) : route('product.store') }}" method="POST" enctype="multipart/form-data">
                             @csrf
                             @if(isset($product))
                             @method('PUT')
@@ -35,7 +35,7 @@
                             </div>
 
                             <div class="form-group">
-                                <label for="desc">Price</label>
+                                <label for="price">Price</label>
                                 <input type="text" name="price" id="price" class="form-control" value="{{ isset($product) ? $product->price : '' }}" required>
                             </div>
 
@@ -49,15 +49,14 @@
                             </div>
                             <div class="form-group">
                                 <label for="img">Image</label>
-                                <input type="text" name="img" id="img" class="form-control" value="{{ isset($product) ? $product->img : '' }}" required>
+                                <input type="file" name="img" id="img" class="form-control" required>
                             </div>
+                            <button type="submit" class="btn btn-primary">{{ isset($product) ? 'Update' : 'Create' }} Product</button>
+                        </form>
                     </div>
-                    <button type="submit" class="btn btn-primary">{{ isset($product) ? 'Update' : 'Create' }} Product</button>
-                    </form>
                 </div>
             </div>
         </div>
-    </div>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
