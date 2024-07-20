@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Ramsey\Uuid\Type\Integer;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Billing>
@@ -16,8 +17,11 @@ class BillingFactory extends Factory
      */
     public function definition(): array
     {
+        $creditNumber = (int)fake()->creditCardNumber();
         return [
-            'type' => fake()->randomElements(['visa','paypal']),
+            'type' => fake()->randomElement(['visa', 'paypal']),
+            'number' => fake()->creditCardNumber(),
+           
         ];
     }
 }

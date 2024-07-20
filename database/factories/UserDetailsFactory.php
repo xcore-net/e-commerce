@@ -17,7 +17,8 @@ class UserDetailsFactory extends Factory
     public function definition(): array
     {
         return [
-            
+            'phone' => fake()->phoneNumber,
+            'address' => fake()->address,
         ];
     }
 }
