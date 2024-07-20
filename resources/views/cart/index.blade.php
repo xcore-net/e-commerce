@@ -1,8 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Products') }}
-        </h2> <a href="{{ url('/product/create') }}" class="btn btn-xs btn-info pull-right">Create New Product</a>
+            {{ __(Str::ucfirst(Auth::user()->name).' Cart') }}
 
     </x-slot>
 
@@ -62,7 +61,18 @@
                 <div class="p-6 text-white ">
                     <b>Total Price : </b>{{ $total_price }}
                 </div>
-
+                <div class="p-6 text-white ">
+                    <form action="{{ route('order.add', ['products' => $products]) }}" method="POST">
+                      @csrf
+                      <button type="button" id="placeOrderButton" class="btn btn-primary">Place Order</button>
+                    </form>
+                  </div>
+                  <script>
+                  document.getElementById('placeOrderButton').addEventListener('click', function(event) {
+                    if (!confirm('Are you sure you want to place this order?')) {
+                      event.preventDefault(); // Prevent form submission if not confirmed
+                    }
+                  });</script>
 
                 </div>
             </div>

@@ -77,6 +77,14 @@ class ProductController extends Controller
 
         return redirect()->route('product.index');
     }
+
+    public function show($product_id)
+    {
+        $product = Product::where('id',$product_id)->first();
+
+        return view('product.show',['product'=>$product]);
+    }
+
     public function destroy($product_id)
     {
         $product = Product::where('id',$product_id)->first();
