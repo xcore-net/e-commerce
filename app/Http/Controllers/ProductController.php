@@ -35,8 +35,7 @@ class ProductController extends Controller
         //     'img' => ['required', 'string'],
         // ]);
 
-        $path = Storage::putFile('file.jpg', $request->file('img'));
-
+        $path = $request->file('img')->store('images', 'public');
         $product = Product::create([
             'title' => $request->title,
             'desc' => $request->desc,
@@ -58,7 +57,6 @@ class ProductController extends Controller
 
     public function update($id, Request $request):RedirectResponse
     {
-        $path = Storage::putFile('chair.jpg', $request->file('img'));
         // $request->validate([
         //     'title' => ['required', 'string', 'max:255'],
         //     'desc' => ['required', 'string'],
@@ -68,7 +66,7 @@ class ProductController extends Controller
         // ]);
 
         $product = Product::find($id);
-
+        $path = $request->file('img')->store('images', 'public');
         $product->update([
             'title' => $request->title,
             'desc' => $request->desc,

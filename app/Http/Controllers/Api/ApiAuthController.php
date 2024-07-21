@@ -22,9 +22,14 @@ class ApiAuthController extends Controller
         }
 
         $user = Auth::user();
-        $token = $user->createToken('API Token')->plainTextToken;
+        $token = $user->createToken('auth_token')->plainTextToken;
 
-        return response()->json(['token' => $token], 200);
+        $cookie = cookie('api_token', $token, 60);
+        return response()->json([
+            'message'       => 'Login success',
+            'access_token'  => $token,
+            'token_type'    => 'Bearer'
+        ])->cookie($cookie);
     }
 }
 
