@@ -3,16 +3,13 @@
 namespace App\Http\Controllers\api;
 
 use App\Http\Controllers\Controller;
-use App\Models\Cart;
+use App\Http\Controllers\api\ApiPaymentController;
 use App\Models\Order;
-use App\Models\Product;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class ApiOrderController extends Controller
 {
-
     public function getOrders(): JsonResponse
     {
         $orders = Order::all();
@@ -26,50 +23,14 @@ class ApiOrderController extends Controller
         return response()->json($orders);
     }
 
-    public function getUserOrders($id)
+    public function pay($id, Request $request): JsonResponse
     {
-        $user = Auth::user();
-
-        if (!$user) {
-            return response()->json(['message' => 'User not found'], 404);
-        }
-
-        $orders = $user->orders->with('products')->get();
-
-        if ($orders->isEmpty()) {
-            return response()->json(['message' => 'No orders found for this user'], 404);
-        }
-
-        return response()->json($orders, 200);
-    }
-    public function createOrder(): JsonResponse
-    {
-
-        $user = Auth::user();
-        $carts = Cart::where('user_id', $user->id)->get();
-
-        if ($carts->isEmpty()) {
-            return response()->json('Your cart is empty.', 400);
-        }
-
-        $totalPrice = $carts->sum(function ($cart) {
-            $product = Product::find($cart->product_id);
-            return $cart->amount * $product->price;
-        });
-
-        $order = Order::create([
-            'user_id' => Auth::user()->id,
-            'total_price' => $totalPrice,
-        ]);
-
-        foreach ($carts as $cart) {
-            $product = Product::find($cart->product_id);
-            $order->products()->attach($cart->product_id, [
-                'amount' => $cart->amount,
-                'price' => $product->price,
-            ]);
-        }
-
-        return response()->json("done");
+        $paymentController = new ApiPaymentController;
+        $order = Order::find($id);
+        $payment = $paymentController->pay($order, $request);
+        $order->payment_id = $payment->id;
+        $order->save();
+        
+        return $payment ? response()->json('payment made', 201) : response()->json($payment, 400);
     }
 }

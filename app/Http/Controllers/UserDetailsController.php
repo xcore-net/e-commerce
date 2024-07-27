@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Models\User;
 use App\Models\Billing;
 use App\Models\UserDetails;
 use Illuminate\Http\RedirectResponse;
@@ -34,36 +33,31 @@ class UserDetailsController extends Controller
     //store details
     public function store(Request $request): RedirectResponse
     {
-        $user_id = Auth::user()->getAuthIdentifier();
-        $user = User::with('userDetails')->where('id', $user_id)->first();
+        $request->validate([
+            'phone' => ['required', 'integer'],
+            'address' => ['required', 'string'],
+            'pay_type' => ['required', 'in:visa,paypal'],
+            'card_number' => ['required', 'integer']
+        ]);
 
-        // $request->validate([
-        //     'phone' => ['required','integer','digits:5'],
-        //     'address' => ['required','string'],
-        //     'pay_type' => ['required', 'in:visa,paypal']  ,
-        //     'card_number'=> ['required','integer','digits:5']
-        // ]);
-
-        // dd(Auth::user()->getAuthIdentifier());
         $billing = Billing::create([
             'type' => $request->pay_type,
             'number' => $request->card_number
         ]);
 
-        $user_details = UserDetails::create([
+        UserDetails::create([
             'phone' => $request->phone,
             'billing_id' => $billing->id,
             'address' => $request->address,
-            'user_id' => 21
+            'user_id' => Auth::id()
         ]);
 
-        return redirect(route('Usedetails.index', absolute: false));
+        return redirect(route('userDetails.index', absolute: false));
     }
 
     public function edit($id)
     {
-
-        $userDetail = UserDetails::where('user_id',$id)->first();
+        $userDetail = UserDetails::where('user_id', $id)->first();
 
         $billing = $userDetail->billing;
         if ($billing) {
@@ -74,17 +68,17 @@ class UserDetailsController extends Controller
         return view('userDetails.create', ['userDetail' => $userDetail]);
     }
 
-    public function update($id,Request $request)
+    public function update($id, Request $request)
     {
         $userDetails = UserDetails::where('user_id', $id)->first();
 
         $billing = $userDetails->billing;
 
         $request->validate([
-            'phone' => ['required', 'integer', 'digits:5'],
-            'adress' => ['required', 'string'],
+            'phone' => ['required', 'integer'],
+            'address' => ['required', 'string'],
             'pay_type' => ['required', 'in:visa,paypal'],
-            'card_number' => ['required', 'integer', 'digits:5']
+            'card_number' => ['required', 'integer']
         ]);
 
         $billing->update([

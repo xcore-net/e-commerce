@@ -4,6 +4,8 @@ namespace App\Http\Controllers\api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Cart;
+use App\Models\Order;
+use App\Models\Product;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -21,18 +23,13 @@ class ApiCartController extends Controller
                 $cart->title = $product->title;
                 $cart->price = $product->price;
                 $cart->category = $product->category;
-            } else {
-                // Handle the case where the product is not found
-                $cart->title = 'Unknown Product';
-                $cart->price = 0;
-                $cart->category = 'Unknown';
+                return $cart;
             }
-            return $cart;
+            return null;
         });
 
         return response()->json($cartsWithProducts, 200);
     }
-
     public function addProductToCart(Request $request): JsonResponse
     {
         $user_carts = Cart::where('user_id', Auth::id())->get();
@@ -54,7 +51,7 @@ class ApiCartController extends Controller
         return response()->json("Product added to cart successfully");
     }
 
-    public function  removeProductFromCart($id)
+    public function removeProductFromCart($id)
     {
         $user = Auth::user();
         $cart = $user->carts->find($id);
@@ -74,15 +71,47 @@ class ApiCartController extends Controller
         return response()->json('Product updated');
     }
 
-    public function clearCart()
+    public function clearCart(): JsonResponse
     {
         $user = Auth::user();
         $carts = $user->carts;
 
-        foreach ($carts as $cart){
+        foreach ($carts as $cart) {
             $cart->delete();
         }
-
         return response()->json('Cart cleared');
+    }
+
+    public function checkout(): JsonResponse
+    {
+        $user = Auth::user();
+        $carts = Cart::where('user_id', $user->id)->get();
+
+        if ($carts->isEmpty()) {
+            return response()->json('Your cart is empty.', 400);
+        }
+
+        $totalPrice = $carts->sum(function ($cart) {
+            $product = Product::find($cart->product_id);
+            return $cart->amount * $product->price;
+        });
+
+        $order = Order::create([
+            'user_id' => $user->id,
+            'total_price' => $totalPrice,
+        ]);
+
+        foreach ($carts as $cart) {
+            $product = Product::find($cart->product_id);
+            $order->products->attach($cart->product_id, [
+                'amount' => $cart->amount,
+                'price' => $product->price,
+            ]);
+        }
+
+        // Empty the user's cart
+        $this->clearCart();
+
+        return response()->json('Order placed successfully!', 200);
     }
 }

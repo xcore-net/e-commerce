@@ -36,7 +36,8 @@ class ProductController extends Controller
         // ]);
 
         $path = $request->file('img')->store('images', 'public');
-        $product = Product::create([
+       
+        Product::create([
             'title' => $request->title,
             'desc' => $request->desc,
             'price' => $request->price,
@@ -44,7 +45,6 @@ class ProductController extends Controller
             'category' => $request->category,
             'img' => $path
         ]);
-
 
         return redirect(route('product.index', absolute: false));
     }

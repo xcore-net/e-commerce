@@ -13,6 +13,9 @@
             <div class="card mb-4">
                 <div class="card-header">
                     Order #{{ $order->id }} - Total Price: ${{ $order->total_price }}
+                    <span class="badge badge-{{ $order->payment_id ? 'success' : 'danger' }} float-right">
+                        {{ $order->payment_id ? 'Paid' : 'Unpaid' }}
+                    </span>
                 </div>
                 <div class="card-body">
                     <ul class="list-group">
@@ -25,6 +28,12 @@
                             </li>
                         @endforeach
                     </ul>
+                    @if(!$order->payment_id)
+                        <form action="{{ route('order.show', $order->id) }}" method="GET">
+                            @csrf
+                            <button type="submit" class="btn btn-primary mt-3">Pay Now</button>
+                        </form>
+                    @endif
                 </div>
             </div>
         @endforeach

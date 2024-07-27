@@ -23,7 +23,7 @@ class ApiProductController extends Controller
     }
     public function createProduct(Request $request)
     {
-        $path = Storage::putFile('file.jpg', $request->file('img'));
+        $path = $request->file('img')->store('images', 'public');
         Product::create([
             'title' => $request->title,
             'desc' => $request->desc,
@@ -39,8 +39,7 @@ class ApiProductController extends Controller
     {
         $product = Product::find($id);
 
-
-        $path = Storage::putFile('file.jpg', $request->file('img'));
+        $path = $request->file('img')->store('images', 'public');
         $product->update([
             'title' => $request->title,
             'desc' => $request->desc,

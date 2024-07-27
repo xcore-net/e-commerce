@@ -16,8 +16,10 @@ return new class extends Migration
             $table->timestamps();
             $table->integer('total_price');
             $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('payment_id')->nullable();
  
             $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('payment_id')->references('id')->on('payments');
         });
     }
 

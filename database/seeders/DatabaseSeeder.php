@@ -21,14 +21,12 @@ class DatabaseSeeder extends Seeder
             UserDetails::factory()->create(['user_id'=>$user->id,'billing_id'=>$billing->id]);
          });
         
-        Product::factory()->count(50)->create();
+        //Product::factory()->count(50)->create();
 
-        // User::factory(10)->create();
-
-        // User::factory()->create([
-        //     'name' => 'odai',
-        //     'email' => 'odaiten@gmail.com',
-        //     'password' => '123456789',
-        // ]);
+        User::factory()->create([
+            'name' => 'odai',
+            'email' => 'odaiten@gmail.com',
+            'password' => '123456789',
+        ]);
     }
 }
