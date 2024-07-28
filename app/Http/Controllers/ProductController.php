@@ -23,13 +23,28 @@ class ProductController extends Controller
     }
     public function store(Request $request)
     {
-       
+        $imageName = '';
+        try {
+            if ($request->hasFile('image')) {
+                $file = $request->file('image');
+                $filename = time() . '_' . $file->getClientOriginalName(); // Custom name
+                $destinationPath = public_path('images'); // Destination path in the public folder
+                $file->move($destinationPath, $filename); // Move the file
+            
+                $imageName = 'images/' . $filename;
+                
+            }else{
+                dd($request->image);
+            }
+        } catch (\Exception $e) {
+            // Handle the exception
+            return redirect()->back()->with('error', 'An error occurred while uploading the image.');
+        }
         $request->validate([
         
         'title'=>['required','string'],
         'description'=>['required','string'],
         'price'=>['required','integer'],
-        'image'=>['required','string'],
         'amount'=>['required','integer'],
         'category'=>['required','in:clothes,food']
         ]);
@@ -40,7 +55,7 @@ class ProductController extends Controller
         'title'=>$request->title,
         'description'=> $request->description,
         'price'=> $request->price,
-        'image'=> $request->image,
+        'image'=> $imageName,
         'amount'=> $request->amount,
         'category'=> $request->category
         ]);
@@ -48,6 +63,7 @@ class ProductController extends Controller
 
         return redirect()->route('product.index');
     }
+
 
     public function edit($product_id)
     {

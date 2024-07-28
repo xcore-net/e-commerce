@@ -1,5 +1,5 @@
 <x-app-layout>
-    <form method="POST" action="{{ isset($product) ? route('product.update', $product->id) : route('product.store') }}">
+    <form method="POST" enctype="multipart/form-data" action="{{ isset($product) ? route('product.update', $product->id) : route('product.store') }}" >
         @csrf
 
         <!-- If editing, add method spoofing -->
@@ -31,7 +31,7 @@
          <!-- image -->
          <div>
             <x-input-label for="product-image" :value="__('Image')" />
-            <x-text-input id="product-image" class="block mt-1 w-full" type="text" name="image" :value="old('image', isset($product) ? $product->image : '')" required  />
+            <input id="product-image" type="file" name="image"  required  />
             <x-input-error :messages="$errors->get('image')" class="mt-2" />
         </div>
 

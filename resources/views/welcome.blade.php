@@ -57,7 +57,7 @@
                    @foreach ($products as $product )
                    <div class="flex flex-wrap gap-4 justify-center">
                     <div class="product-container bg-gray-900 dark:bg-gray-800 rounded-lg shadow-md p-4 w-64 border border-gray">
-                        <img src={{ $product->image }} alt="Product Image" class="w-full h-40 object-cover rounded-t-lg">
+                        <img src={{ asset($product->image) }} alt="Product Image" class="w-full h-40 object-cover rounded-t-lg">
                         <div class="p-4">
                             <h2 class="text-xl font-semibold text-gray-900 dark:text-white">{{ $product->title }}</h2>
                             
