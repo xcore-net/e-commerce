@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\ApiCartController;
+use App\Http\Controllers\Api\ApiOrderController;
 use App\Http\Controllers\Api\ApiUserDetailsController;
 use App\Http\Controllers\Api\ApiProductController;
 use Illuminate\Support\Facades\Route;
@@ -23,4 +24,7 @@ use Illuminate\Support\Facades\Route;
     Route::delete('/cart/delete/{cart_id}',[ApiCartController::class, 'destroy']);
     Route::post('/cart/add',[ApiCartController::class, 'add']);
 
+    //order
+    Route::get('/order/index',[ApiOrderController::class, 'index']);
+    Route::get('/order/add/{user_id}',[ApiOrderController::class, 'add']);
 
