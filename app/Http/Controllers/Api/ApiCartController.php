@@ -1,34 +1,42 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
-use App\Models\User;
+use App\Http\Controllers\Controller;
 use App\Models\Cart;
+use App\Models\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
-class CartController extends Controller
+class ApiCartController extends Controller
 {
-    public function index()
+    public function index($user_id)
     {
-        $user = User::where('id',Auth::user()->id)->first();
+        $user = User::where('id',$user_id)->first();
         $products = $user->product()->withPivot('amount','id')->where('user_id', $user->id)->get(); // Updated line
 
-        return view('cart.index',['products'=>$products]);
+        return response()->json(['products'=>$products]);
     }
 
     public function destroy($cart_id)
     {
         DB::table('carts')->where('id', $cart_id)->delete(); 
-        return redirect()->route('cart.index');
+        return response()->json([
+            'message' => 'cart deleted successfully'
+        ]);
     }
 
-    
     public function add(Request $request){
-        $product_id = $request->input('product_id');
-        $user_id = Auth::id(); 
-        $amount = $request->input('amount');
+
+        // $data = $request->all();
+        // $request = $data['products'];
+        // $pivot = $request['pivot'];
+        
+        $product_id = $request->product_id;
+        $user_id = $request->user_id; 
+        $amount = $request->amount; 
+
+        
 
         $cart = Cart::where('user_id', $user_id)
                     ->where('product_id', $product_id)
@@ -49,6 +57,8 @@ class CartController extends Controller
         }       
         $cart->save(); 
 
-        return redirect(route('welcome'));
+        return response()->json([
+            'message' => 'cart saved seccessefully'
+        ]);
     }
 }
