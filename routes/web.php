@@ -17,6 +17,11 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
+   
+    // Route::resource('roles', RoleController::class);
+    // Route::resource('users', UserController::class);
+    // Route::resource('products', ProductController::class);
+
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
@@ -39,9 +44,7 @@ Route::middleware('auth')->group(function () {
 
     //cart
     Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
-    Route::get('/cart/create', [CartController::class, 'create'])->name('cart.create');
     Route::post('/cart/store', [CartController::class, 'store'])->name('cart.store');
-    Route::get('/cart/{id}', [CartController::class, 'edit'])->name('cart.edit');
     Route::put('/cart/{id}', [CartController::class, 'update'])->name('cart.update');
     Route::delete('/cart/{id}', [CartController::class, 'destroy'])->name('cart.destroy');
     Route::post('/cart/add', [CartController::class, 'addToCart'])->name('cart.addToCart');
@@ -53,9 +56,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/order/{id}', [OrderController::class, 'show'])->name('order.show');
     Route::post('/order/{id}/pay', [OrderController::class, 'pay'])->name('order.pay');
 
-        //payment
-        Route::get('/payment', [PaymentController::class, 'index'])->name('payment.index');
+    //payment
+    Route::get('/payment', [PaymentController::class, 'index'])->name('payment.index');
 });
-
 
 require __DIR__ . '/auth.php';

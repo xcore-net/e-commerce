@@ -8,6 +8,7 @@ use App\Models\Product;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\View\View;
 
 class CartController extends Controller
@@ -15,7 +16,7 @@ class CartController extends Controller
     public function index(): View
     {
         $user = Auth::user();
-        $carts = Cart::where('user_id', $user->id)->get();
+        $carts = $user->carts;
 
         $cartsWithProducts = $carts->map(function ($cart) use ($user) {
             $product = $user->products->where('id', $cart->product_id)->first();
@@ -28,7 +29,6 @@ class CartController extends Controller
         });
         return view('cart.index', ['cartsWithProducts' => $cartsWithProducts]);
     }
-
 
     //show create page
     public function create(): View
@@ -88,14 +88,17 @@ class CartController extends Controller
     public function destroy($id): RedirectResponse
     {
         $cart = Cart::find($id);
+        
+        Gate::authorize('delete', $cart);
         $cart->delete();
+        
         return redirect(route('cart.index', absolute: false));
     }
 
     public function addToCart(Request $request): RedirectResponse
     {
         $user = Auth::user();
-        $user_carts = Cart::where('user_id', $user->id)->get();
+        $user_carts = $user->carts;
 
         $duplicate_product = $user_carts->where('product_id', $request->product_id)->first();
 
@@ -144,10 +147,9 @@ class CartController extends Controller
                 'price' => $product->price,
             ]);
         }
-
         // Empty the user's cart
         $this->clearCart();
 
-        return redirect()->route('store')->with('success', 'Order placed successfully!');
+        return redirect()->route('order.index')->with('success', 'Order placed successfully!');
     }
 }

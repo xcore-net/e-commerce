@@ -9,6 +9,7 @@ use App\Models\Product;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 
 class ApiCartController extends Controller
 {
@@ -55,6 +56,7 @@ class ApiCartController extends Controller
     {
         $user = Auth::user();
         $cart = $user->carts->find($id);
+        Gate::authorize('delete', $cart); //useless
         $cart->delete();
         return response()->json('Product removed');
     }

@@ -22,7 +22,7 @@
                         <li class="list-group-item">
                             <div class="row">
                                 <div class="col-md-2">
-                                    <img src="{{ $product->image_url }}" alt="{{ $product->title }}" class="img-fluid">
+                                    <img src={{asset('storage/'.$product->img)}} alt="{{ $product->title }}" class="img-fluid">
                                 </div>
                                 <div class="col-md-10">
                                     <strong>{{ $product->title }}</strong><br>
@@ -56,7 +56,7 @@
                                 @endforeach
                             </select>
                         </div>
-                        <button type="submit" class="btn btn-primary mt-3">Pay Now</button>
+                        <button type="submit" class="btn btn-primary mt-3 float-right">Pay Now</button>
                     </form>
                 @endif
             </div>

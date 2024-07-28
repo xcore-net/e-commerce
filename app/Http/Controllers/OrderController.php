@@ -20,7 +20,7 @@ class OrderController extends Controller
     }
     public function show($id)
     {
-        $order = Order::with('products')->find($id);
+        $order = Order::find($id);
         $methods = ['visa', 'paypal'];
 
         return view('order.show', ['order'=>$order, 'methods'=>$methods,'payment'=>$order->payment]);

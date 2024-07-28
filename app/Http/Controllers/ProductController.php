@@ -6,7 +6,6 @@ use App\Models\Product;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
@@ -26,14 +25,14 @@ class ProductController extends Controller
     //store details
     public function store(Request $request): RedirectResponse
     {
-        // $request->validate([
-        //     'title' => ['required', 'string', 'max:255'],
-        //     'desc' => ['required', 'string'],
-        //     'price' => ['required', 'integer'],
-        //     'amount' => ['required', 'integer', 'digits:6'],
-        //     'category' => ['required', 'string'],
-        //     'img' => ['required', 'string'],
-        // ]);
+        $request->validate([
+            'title' => ['required', 'string', 'max:255'],
+            'desc' => ['required', 'string'],
+            'price' => ['required', 'integer'],
+            'amount' => ['required', 'integer'],
+            'category' => ['required', 'string'],
+            // 'img' => ['required', ''],
+        ]);
 
         $path = $request->file('img')->store('images', 'public');
        
