@@ -10,10 +10,11 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
-    use HasFactory,HasApiTokens, Notifiable;
+    use HasFactory, HasApiTokens, Notifiable, HasRoles;
 
     /**
      * The attributes that are mass assignable.
@@ -52,13 +53,13 @@ class User extends Authenticatable
     public function carts(): HasMany
     {
         return $this->hasMany(Cart::class);
-    } 
-    
+    }
+
     public function payments(): HasMany
     {
         return $this->hasMany(Payment::class);
     }
-    
+
     public function userDetails(): HasOne
     {
         return $this->hasOne(UserDetails::class);
@@ -71,6 +72,6 @@ class User extends Authenticatable
 
     public function products(): BelongsToMany
     {
-        return $this->belongsToMany(Product::class,'carts', 'user_id', 'product_id');
+        return $this->belongsToMany(Product::class, 'carts', 'user_id', 'product_id');
     }
 }

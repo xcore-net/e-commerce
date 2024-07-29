@@ -13,28 +13,40 @@ class RoleSeeder extends Seeder
      */
     public function run(): void
     {
-        Role::create(['name' => 'Super Admin']);
-        $admin = Role::create(['name' => 'Admin']);
-        $productManager = Role::create(['name' => 'Product Manager']);
-        $user = Role::create(['name' => 'User']);
+        Role::createOrFirst(['name' => 'Super Admin']);
+        $admin = Role::createOrFirst(['name' => 'Admin']);
+        $user = Role::createOrFirst(['name' => 'User']);
+        $productManager = Role::createOrFirst(['name' => 'Product Manager']); 
+        $orderManager = Role::createOrFirst(['name' => 'Order Manager']); 
+        $paymentManager = Role::createOrFirst(['name' => 'Payment Manager']); 
 
         $admin->givePermissionTo([
             'create-user',
             'edit-user',
             'delete-user',
-            'create-product',
-            'edit-product',
-            'delete-product'
-        ]);
-
-        $productManager->givePermissionTo([
-            'create-product',
-            'edit-product',
-            'delete-product'
         ]);
 
         $user->givePermissionTo([
-            'view-product'
+            'view-product',
+            'view-order',
+            'view-payment',
+        ]);
+        $productManager->givePermissionTo([
+            'view-product',
+            'create-product',
+            'edit-product',
+            'delete-product'
+        ]);
+        $orderManager->givePermissionTo([
+            'create-order',
+            'edit-order',
+            'delete-order',
+            'view-all-order'
+        ]);
+        $paymentManager->givePermissionTo([
+            'create-payment',
+            'edit-payment',
+            'delete-payment'
         ]);
     }
 }

@@ -18,6 +18,13 @@ class OrderController extends Controller
 
         return view('order.index', ['orders' => $orders]);
     }
+
+    public function getAllOrders(): View
+    {
+        $orders = Order::all();
+        return view('order.index', ['orders' => $orders]);
+    }
+    
     public function show($id)
     {
         $order = Order::find($id);

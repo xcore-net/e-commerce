@@ -17,10 +17,6 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
-   
-    // Route::resource('roles', RoleController::class);
-    // Route::resource('users', UserController::class);
-    // Route::resource('products', ProductController::class);
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -35,12 +31,24 @@ Route::middleware('auth')->group(function () {
     Route::delete('/user_details/{id}', [UserDetailsController::class, 'destroy'])->name('userDetails.destroy');
 
     //Product
-    Route::get('/product', [ProductController::class, 'index'])->name('product.index');
-    Route::get('/product/create', [ProductController::class, 'create'])->name('product.create');
-    Route::post('/product/store', [ProductController::class, 'store'])->name('product.store');
-    Route::get('/product/{id}', [ProductController::class, 'edit'])->name('product.edit');
-    Route::put('/product/{id}', [ProductController::class, 'update'])->name('product.update');
-    Route::delete('/product/{id}', [ProductController::class, 'destroy'])->name('product.destroy');
+    Route::middleware('permission:view-product')->group(function () {
+        Route::get('/product', [ProductController::class, 'index'])->name('product.index');
+        Route::get('/products/{id}', [ProductController::class, 'show'])->name('product.show'); //Doesn't exist btw
+    });
+
+    Route::middleware('permission:create-product')->group(function () {
+        Route::get('/product/create', [ProductController::class, 'create'])->name('product.create');
+        Route::post('/product/store', [ProductController::class, 'store'])->name('product.store');
+    });
+
+    Route::middleware('permission:update-product')->group(function () {
+        Route::get('/product/{id}', [ProductController::class, 'edit'])->name('product.edit');
+        Route::put('/product/{id}', [ProductController::class, 'update'])->name('product.update');
+    });
+
+    Route::middleware('permission:delete-product')->group(function () {
+        Route::delete('/product/{id}', [ProductController::class, 'destroy'])->name('product.destroy');
+    });
 
     //cart
     Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
@@ -55,6 +63,15 @@ Route::middleware('auth')->group(function () {
     Route::post('/order/store', [OrderController::class, 'store'])->name('order.store');
     Route::get('/order/{id}', [OrderController::class, 'show'])->name('order.show');
     Route::post('/order/{id}/pay', [OrderController::class, 'pay'])->name('order.pay');
+
+    Route::middleware('permission:view-order')->group(function () {
+        Route::get('/order', [OrderController::class, 'index'])->name('order.index');
+        Route::get('/order/{id}', [OrderController::class, 'show'])->name('order.show');
+    });
+
+    Route::middleware('permission:view-all-order')->group(function () {
+        Route::get('/orders', [OrderController::class, 'getAllOrders'])->name('order.all');
+    });
 
     //payment
     Route::get('/payment', [PaymentController::class, 'index'])->name('payment.index');
