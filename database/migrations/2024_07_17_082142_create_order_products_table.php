@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('order_products', function (Blueprint $table) {
             $table->id();
-
+            $table->integer('amount');
             $table->unsignedBigInteger('product_id')->nullable(); // Add a foreign key column
             $table->foreign('product_id')->references('id')->on('products');
 

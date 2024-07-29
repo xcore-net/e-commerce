@@ -6,10 +6,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use App\Models\Billing;
-use App\Models\UserDetails;
+use App\Models\UserDetail;
 use Illuminate\Http\RedirectResponse;
 
-class UserDetailsController extends Controller
+class UserDetailController extends Controller
 {
     public function index()
     {
@@ -17,7 +17,7 @@ class UserDetailsController extends Controller
         $user = User::with('userdetails')->where('id', Auth::user()->id)->first();
 
         //getting his billing details
-        $billing_id = $user->user_datail->billing_id;
+        $billing_id = $user->userdetails->billing_id ?? "Not Found";
         $billing = Billing::where('id',$billing_id)->first();
 
         return view('userDetails.index',['user'=>$user,'billing'=>$billing]);
@@ -30,83 +30,105 @@ class UserDetailsController extends Controller
     }
 
     //store details
-    public function store(Request $request) :RedirectResponse
+    public function store(Request $request) 
     {
         $user_id = Auth::user()->id;
-        $user = User::with('userdetails')->where('id', $user_id)->first(); 
         
         $request->validate([
-            'phone' => ['required','integer','digits:5'],
+            'phone' => ['required','integer'],
             'address' => ['required','string'],
-            'pay_type' => ['required', 'in:visa,paypal']  ,
-            'card_number'=> ['required','integer','digits:5']
+            'type' => ['required', 'in:visa,pypal'] ,
+            'number'=> ['required','integer']
         ]);
 
         $billing = Billing::create([
-            'type'=>$request->pay_type,
-            'number' => $request->card_number
+            'type'=>$request->type,
+            'number' => $request->number
         ]);        
  
-        $user_details = UserDetails::create([
+        $userdetails = UserDetail::create([
             'phone' => $request->phone,
             'billing_id' => $billing->id,
             'address' => $request->address,
             'user_id' => $user_id
         ]);
         
+        $user = User::with('userdetails')->where('id', $user_id)->first(); // Added this line
         
-        
-        return redirect(route('/', absolute: false));
+        return view('userDetails.index',['user' => $user,'billing'=>$billing,'userdetails'=>$userdetails]); // Pass user and billing data
     }
 
     public function edit()
     {
-        return view('userDetails.create',['user'=>Auth::user()->id]);
+        //getting auth user details
+        $user = User::with('userdetails')->where('id', Auth::user()->id)->first();
+
+        // Check if user and userdetails exist
+        if (!$user || !$user->userdetails) {
+            return view('userDetails.index',['message'=> 'User details not found.']);
+        }
+
+        //getting his billing details
+        $billing_id = $user->userdetails->billing_id;
+        $billing = Billing::where('id', $billing_id)->first();
+
+        return view('userDetails.create', ['user' => $user, 'billing' => $billing]);
     }
 
 
     public function update(Request $request)
     {
-        $user_id = Auth::user()->id;
-        $user = User::with('userdetails')->where('id', $user_id)->first(); 
-        $billing_id = $user->user_datail->billing_id;
+        $user = User::with('userdetails')->where('id', Auth::user()->id)->first();
+
+        //getting his billing details
+        $billing_id = $user->userdetails->billing_id;
+        $billing = Billing::where('id',$billing_id)->first();
+
+        $userdetails = $user->userdetails;
+        
 
         $request->validate([
-            'phone' => ['required','integer','digits:5'],
+            'phone' => ['required','integer'],
             'address' => ['required','string'],
-            'pay_type' => ['required', 'in:visa,paypal']  ,
-            'card_number'=> ['required','integer','digits:5']
+            'type' => ['required', 'in:visa,pypal']  ,
+            'number'=> ['required','integer',]
         ]);
 
-        $billing = Billing::where('id',$billing_id)->first();
-        $billing->update([
-            'type'=>$request->pay_type,
-            'number' => $request->card_number
-        ]);
-
-        $user_details = UserDetails::where('user_id', $user_id)->first();
-        $user_details->update([
+        $userdetails->update([
             'phone' => $request->phone,
             'address' => $request->address,
         ]);
+      
         
-        return redirect(route('/', absolute: false));
+        $billing->update([
+            'type'=>$request->type,
+            'number' => $request->number
+        ]);
+
+        
+        return view('userDetails.index',['billing'=>$billing,'userdetails'=>$userdetails,'user'=>$user]);
     }
 
-
+    
     public function destroy(Request $request)
     { 
-        $user_id = Auth::user()->id;
-        $user = User::with('userdetails')->where('id', $user_id)->first(); 
-        
-        
-        $user_details = UserDetails::where('user_id', $user_id)->first();
-        
-        $billing_id = $user->user_datail->billing_id;
-        $billing = Billing::where('id',$billing_id)->first();
+        $user = User::with('userdetails')->where('id', Auth::user()->id)->first();
 
-        $user_details->delete();
-        $billing->delete();
+        //getting his billing details
+        $billing_id = $user->userdetails->billing_id ?? null; // Use null coalescing
+        $billing = Billing::where('id', $billing_id)->first();
+
+        $userdetails = $user->userdetails;
+
+        // Check if user details and billing exist before deleting
+        if ($userdetails) {
+            $userdetails->delete();
+        }
+        if ($billing) {
+            $billing->delete();
+        }
+
+        return view('userDetails.index');
         
     }
 }

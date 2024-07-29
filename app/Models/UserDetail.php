@@ -25,6 +25,7 @@ class UserDetail extends Model
     {
         return $this->belongsTo(Billing::class);
     }
+    
     public function user()
     {
         return $this->belongsTo(User::class);

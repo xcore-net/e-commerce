@@ -11,6 +11,7 @@ class Billing extends Model
     use HasFactory;
     protected $table='billings';
     protected $fillable = [
+        'id',
         'number',
         'type',
         

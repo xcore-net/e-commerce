@@ -21,69 +21,77 @@ class ProductController extends Controller
 
     public function store(Request $request)
     {
-       
-        // dd($request->title);
 
+      
+        // تحقق من صحة الطلب
         $request->validate([
+            'title' => ['required', 'string'],
+            'desc' => ['required', 'string'],
+            'amount' => ['required', 'integer'],
+            'img' => ['required'], // تحقق من صحة الصورة
+            'price' => ['required', 'integer'],
+            'category' => ['required', 'in:clothes,food'],
+        ]);
+
+        $path = $request->file('img')->store('image3','public');
+            // $file = $request->file('img');
+            // $extention= $file->getClientOriginalExtension();
+            // $filename= time().'.'.$extention;
+            // $path='images/products/';
+            // $file->move($path,$filename);
+       
+            // dd($request->img);
+        // إنشاء المنتج
+        $product = Product::create([
+            'title' => $request->title,
+            'desc' => $request->desc,
+            'amount' => $request->amount,
+            'img' => $path, // استخدم المسار الكامل للصورة
+            'price' => $request->price,
+            'category' => $request->category,
+        ]);
+
+        return redirect()->route('product.index'); // إعادة التوجيه بعد التخزين
+    }
+    public function edit($id)
+    {
+        $product = Product::find($id);
+        return view('product.create', ['product' => $product]);
+    }
+
+    public function update(Request $request,$product_id)
+         {
+            $product=Product::where('id',$product_id)->first();
+    
+            $request->validate([
             'title' => ['required','string',],
             'desc' => ['required','string'],
             'amount' => ['required', 'integer']  ,
-            'img'=> ['required','string'],
+            'img'=> ['required'],
             'price'=> ['required','integer'],
-            'category'=> ['required','in:clothes,food']
+            'category'=> ['required','string','in:clothes,food']
+            ]);
+     
+            // $file = $request->file('img');
+            // $extention= $file->getClientOriginalExtension();
+            // $filename= time().'.'.$extention;
+            // $path='images/products/';
+            // $file->move($path,$filename);
+            $path = $request->file('img')->store('image3','public');
 
-        ]);
-
-        $product = Product::create([
-            'title'=>$request->title,
-            'desc' => $request->desc,
-            'amount' => $request->amount,
-            'img' => $request->img,
-            'price' => $request->price,
-            'category' => $request->category,
-        ]);        
- 
-      
-        
-        
-        
-        return redirect()->route('product.index'); // Corrected the redirect method
-     }
-
-     public function edit($product_id)
-     {
-        $product=Product::where('id',$product_id)->first();
-         return view('product.create',['product'=>$product]);
-     }
-
-     public function update(Request $request,$product_id)
-     {
-        
-        $request->validate([
-        'title' => ['required','string',],
-        'desc' => ['required','string'],
-        'amount' => ['required', 'integer']  ,
-        'img'=> ['required','string',],
-        'price'=> ['required','integer'],
-        'category'=> ['required','string','in:clothes,food']
-        ]);
- 
-        $product=Product::where('id',$product_id)->first();
-
-         $product->update([
-            'title'=>$request->title,
-            'desc' => $request->desc,
-            'amount' => $request->amount,
-            'img' => $request->img,
-            'price' => $request->price,
-            'category' => $request->category,
-         ]);
- 
-        
-         
-         return redirect()->route('product.index'); // Corrected the redirect method
-     }
- 
+             $product->update([
+                'title'=>$request->title,
+                'desc' => $request->desc,
+                'amount' => $request->amount,
+                'img' => $path,
+                'price' => $request->price,
+                'category' => $request->category,
+             ]);
+     
+            
+             
+             return redirect()->route('product.index'); 
+            }
 
      public function destroy($product_id)
      { 
@@ -96,6 +104,16 @@ class ProductController extends Controller
 
      }
 
+    //  public function show (Request $request,$product_id) {
+    //     $products=Product::where('id',$product_id)->first();
+    //     return view('product.show',['products'=>$products]);
+    // }
+
+    
+    public function show($product_id) {
+        $product = Product::findOrFail($product_id); // Fetch the product by ID
+        return view('product.show', compact('product')); // Pass the product to the view
+    }
 
 
 
