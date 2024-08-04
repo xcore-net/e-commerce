@@ -17,13 +17,9 @@ Route::middleware([EnsureFrontendRequestsAreStateful::class])->group(function ()
     Route::middleware('auth:sanctum')->post('/logout', [AuthController::class,'logout']);
 
     Route::middleware('auth:sanctum')->group(function () {
-//userdetail
-Route::get('/userdetails/index', [ApiUserDetailController::class,'index']);
- Route::post('/userdetails/update', [ApiUserDetailController::class, 'update']);
- Route::post('/userdetails/store', [ApiUserDetailController::class, 'store']);
-Route::delete('/userdetails/delete', [ApiUserDetailController::class, 'destroy']);
 
- 
+
+        Route::middleware('role:admin|productManager')->group(function () {
 
 //product//
 
@@ -33,15 +29,28 @@ Route::post('/store_product', [ApiProductController::class, 'store']);
  Route::delete('/delete_product/{product_id}', [ApiProductController::class, 'destroy']);
  Route::get('/product/show/{product_id}', [ApiProductController::class,'show']);
 
+
+        });
+        
+ Route::middleware('role:admin')->group(function () {
+
+    //userdetail
+Route::get('/userdetails/index', [ApiUserDetailController::class,'index']);
+Route::post('/userdetails/update', [ApiUserDetailController::class, 'update']);
+Route::post('/userdetails/store', [ApiUserDetailController::class, 'store']);
+Route::delete('/userdetails/delete', [ApiUserDetailController::class, 'destroy']);
+
  //cart
  Route::get('/cart/index', [ApiCartController::class, 'index']);
  Route::delete('/cart/delete/{cart_id}', [ApiCartController::class, 'destroy']);
  Route::post('/cart/add/{product_id}', [ApiCartController::class,'add']);
-
+ });
  //order
+ Route::middleware('role:admin|orderManager')->group(function () {
 
  Route::get('/order/index',[ApiOrderController::class, 'index']);
 Route::get('/order/add',[ApiOrderController::class, 'add']);
+ });
 
 });
 });

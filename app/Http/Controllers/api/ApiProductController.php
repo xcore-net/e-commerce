@@ -118,6 +118,7 @@ class ApiProductController extends Controller
 
     public function store(Request $request)
     {
+        
        
         // dd($request->title);
 
@@ -125,7 +126,7 @@ class ApiProductController extends Controller
             'title' => ['required','string',],
             'desc' => ['required','string'],
             'amount' => ['required', 'integer']  ,
-            'img'=> ['required'],
+             'img'=> ['required'],
             'price'=> ['required','integer'],
             'category'=> ['required','in:clothes,food']
 

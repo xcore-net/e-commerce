@@ -20,7 +20,7 @@
             <x-input-error :messages="$errors->get('amount')" class="mt-2" />
         </div>
         <div style="display: flex;margin-top:8px">
-        <button style="margin:auto" type="submit" class="bg-orange-600 text-white rounded px-4 py-2">Add to Cart</button>
+        <button style="margin:auto" type="submit" class="bg-orange-600 rounded px-4 py-2">Add to Cart</button>
         </div>
     </form>
 </x-app-layout>
