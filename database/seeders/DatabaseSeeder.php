@@ -16,10 +16,10 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-         User::factory(20)->create()->each(function($user){
-            $billing = Billing::factory()->create();
-            UserDetails::factory()->create(['user_id'=>$user->id,'billing_id'=>$billing->id]);
-         });
+        //  User::factory(20)->create()->each(function($user){
+        //     $billing = Billing::factory()->create();
+        //     UserDetails::factory()->create(['user_id'=>$user->id,'billing_id'=>$billing->id]);
+        //  });
         
         //Product::factory()->count(50)->create();
 
@@ -27,6 +27,6 @@ class DatabaseSeeder extends Seeder
             'name' => 'odai',
             'email' => 'odaiten@gmail.com',
             'password' => '123456789',
-        ]);
+        ])->assignRole('user');
     }
 }

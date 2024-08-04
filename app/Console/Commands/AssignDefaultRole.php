@@ -20,7 +20,7 @@ class AssignDefaultRole extends Command
     {
         // $usersWithoutRoles = User::doesntHave('roles')->get();
         $user = User::find(21);
-        $defaultRole = Role::findByName('Product manager'); // Replace 'default-role' with your desired role name
+        $defaultRole = Role::findByName('productManager'); // Replace 'default-role' with your desired role name
         $user->assignRole($defaultRole);
 
         // foreach ($usersWithoutRoles as $user) {

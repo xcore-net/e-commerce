@@ -19,7 +19,7 @@ class UserSeeder extends Seeder
             'email' => 'super@gmail.com',
             'password' => Hash::make('123456789')
         ]);
-        $superAdmin->assignRole('Super Admin');
+        $superAdmin->assignRole('superAdmin');
 
         // Creating Admin User
         $admin = User::create([
@@ -27,7 +27,7 @@ class UserSeeder extends Seeder
             'email' => 'ahsan@allphptricks.com',
             'password' => Hash::make('ahsan1234')
         ]);
-        $admin->assignRole('Admin');
+        $admin->assignRole('admin');
 
         // Creating Product Manager User
         $productManager = User::create([
@@ -35,23 +35,23 @@ class UserSeeder extends Seeder
             'email' => 'productManager@gmail.com',
             'password' => Hash::make('123456789')
         ]);
-        $productManager->assignRole('Product Manager');
+        $productManager->assignRole('productManager');
 
-        // // Creating Order Manager User
-        // $orderManager = User::create([
-        //     'name' => 'Order Manager',
-        //     'email' => 'orderManager@gmail.com',
-        //     'password' => Hash::make('123456789')
-        // ]);
-        // $orderManager->assignRole('Order Manager');
+        // Creating Order Manager User
+        $orderManager = User::create([
+            'name' => 'Order Manager',
+            'email' => 'orderManager@gmail.com',
+            'password' => Hash::make('123456789')
+        ]);
+        $orderManager->assignRole('orderManager');
 
-        // // Creating Payments Manager User
-        // $paymentManager = User::create([
-        //     'name' => 'payment Manager',
-        //     'email' => 'paymentManager@gmail.com',
-        //     'password' => Hash::make('123456789')
-        // ]);
-        // $paymentManager->assignRole('Payment Manager');
+        // Creating Payments Manager User
+        $paymentManager = User::create([
+            'name' => 'payment Manager',
+            'email' => 'paymentManager@gmail.com',
+            'password' => Hash::make('123456789')
+        ]);
+        $paymentManager->assignRole('paymentManager');
 
         // Creating Application User
         $user = User::create([
@@ -59,6 +59,6 @@ class UserSeeder extends Seeder
             'email' => 'naghman@allphptricks.com',
             'password' => Hash::make('naghman1234')
         ]);
-        $user->assignRole('User');
+        $user->assignRole('user');
     }
 }

@@ -19,7 +19,7 @@ class ApiOrderController extends Controller
 
     public function getOrder($id): JsonResponse
     {
-        $orders = Order::where('user_id', $id)->get();
+        $orders = Order::where('user_id', $id)->first();
         return response()->json($orders);
     }
 

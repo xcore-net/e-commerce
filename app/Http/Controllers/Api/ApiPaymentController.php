@@ -11,12 +11,17 @@ use Illuminate\Support\Facades\Auth;
 
 class ApiPaymentController extends Controller
 {
-    public function index(): JsonResponse
+    public function getPayments(): JsonResponse
     {
         $payments = Payment::all();
         return response()->json($payments, 200);
     }
-
+ public function getUserPayments(): JsonResponse
+    {
+        $user = auth::user();
+        $payments = $user->payments;
+        return response()->json($payments, 200);
+    }
     public function pay(Order $order, Request $request)
     {
         $request->validate([

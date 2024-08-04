@@ -17,29 +17,52 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', function (Request $request) {
         return $request->user();
     });
-    Route::get('user/orders', [ApiUserController::class, 'getUserOrders']);
-    Route::get('user/{id}/orders', [ApiUserController::class, 'getOrderByUSer']);
+
+    Route::middleware('role:orderManager')->group(function () {
+        Route::get('user/orders', [ApiUserController::class, 'getUserOrders']);
+        Route::get('user/{id}/orders', [ApiUserController::class, 'getOrdersByUser']);
+    });
 
     //Product
-    Route::get('/product', [ApiProductController::class, 'getProducts']);
-    Route::post('/product/store', [ApiProductController::class, 'createProduct']);
-    Route::get('/product/{id}', [ApiProductController::class, 'getProduct']);
-    Route::put('/product/{id}', [ApiProductController::class, 'updateProduct']);
-    Route::delete('/product/{id}', [ApiProductController::class, 'deleteProduct']);
+    Route::middleware('role:productManager|user')->group(function () {
+        Route::get('/product', [ApiProductController::class, 'getProducts']);
+        Route::get('/product/{id}', [ApiProductController::class, 'getProduct']);
+    });
+
+    Route::middleware('role:productManager')->group(function () {
+        Route::post('/product', [ApiProductController::class, 'createProduct']);
+        Route::put('/product/{id}', [ApiProductController::class, 'updateProduct']);
+        Route::delete('/product/{id}', [ApiProductController::class, 'deleteProduct']);
+    });
 
     //Order
-    Route::get('/orders', [ApiOrderController::class, 'getOrders']);
+    Route::middleware('role:orderManager')->group(function () {
+        Route::get('/orders', [ApiOrderController::class, 'getOrders']);
+    });
+
+    Route::middleware('role:user')->group(function(){
     Route::get('/order/{id}', [ApiOrderController::class, 'getOrder']);
     Route::post('/order/store', [ApiOrderController::class, 'createOrder']);
     Route::delete('/order/{id}', [ApiOrderController::class, 'deleteOrder']);
     Route::post('/order/{id}/pay', [ApiOrderController::class, 'pay']);
+    });
 
-    // Cart
-    Route::get('/cart', [ApiCartController::class, 'getCart']);
-    Route::post('/cart/add', [ApiCartController::class, 'addProductToCart']);
-    Route::post('/cart/checkout', [ApiCartController::class, 'checkout']);
-    Route::put('/cart/{id}', [ApiCartController::class, 'updateCartProduct']);
-    Route::delete('/cart/clear', [ApiCartController::class, 'clearCart']);
-    Route::delete('/cart/{id}', [ApiCartController::class, 'removeProductFromCart']);
+    //Cart
+    Route::middleware('role:user')->group(function () {
+        Route::get('/cart', [ApiCartController::class, 'getCart']);
+        Route::post('/cart/add', [ApiCartController::class, 'addProductToCart']);
+        Route::post('/cart/checkout', [ApiCartController::class, 'checkout']);
+        Route::put('/cart/{id}', [ApiCartController::class, 'updateCartProduct']);
+        Route::delete('/cart/clear', [ApiCartController::class, 'clearCart']);
+        Route::delete('/cart/{id}', [ApiCartController::class, 'removeProductFromCart']);
+    });
 
+    //Payments
+    Route::middleware('role:user')->group(function () {
+        Route::get('/user/payments', [ApiPaymentController::class, 'getUserPayments']);
+    });
+
+    Route::middleware('role:paymentManager')->group(function () {
+        Route::get('/payments', [ApiPaymentController::class, 'getPayments']);
+    });
 });

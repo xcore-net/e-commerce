@@ -23,7 +23,7 @@ class PermissionSeeder extends Seeder
             //product
             'view-product',
             'create-product',
-            'edit-product',
+            'update-product',
             'delete-product',
             //order
             'view-order',

@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Role;
 
@@ -13,12 +12,12 @@ class RoleSeeder extends Seeder
      */
     public function run(): void
     {
-        Role::createOrFirst(['name' => 'Super Admin']);
+        Role::createOrFirst(['name' => 'superAdmin']);
         $admin = Role::createOrFirst(['name' => 'Admin']);
         $user = Role::createOrFirst(['name' => 'User']);
-        $productManager = Role::createOrFirst(['name' => 'Product Manager']); 
-        $orderManager = Role::createOrFirst(['name' => 'Order Manager']); 
-        $paymentManager = Role::createOrFirst(['name' => 'Payment Manager']); 
+        $productManager = Role::createOrFirst(['name' => 'productManager']); 
+        $orderManager = Role::createOrFirst(['name' => 'orderManager']); 
+        $paymentManager = Role::createOrFirst(['name' => 'paymentManager']); 
 
         $admin->givePermissionTo([
             'create-user',
@@ -31,21 +30,23 @@ class RoleSeeder extends Seeder
             'view-order',
             'view-payment',
         ]);
+
         $productManager->givePermissionTo([
             'view-product',
             'create-product',
-            'edit-product',
+            'update-product',
             'delete-product'
         ]);
+
         $orderManager->givePermissionTo([
             'create-order',
-            'edit-order',
+            'update-order',
             'delete-order',
             'view-all-order'
         ]);
+
         $paymentManager->givePermissionTo([
             'create-payment',
-            'edit-payment',
             'delete-payment'
         ]);
     }
