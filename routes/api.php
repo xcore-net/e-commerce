@@ -18,7 +18,7 @@ Route::middleware('auth:sanctum')->group(function () {
         return $request->user();
     });
 
-    Route::middleware('role:orderManager')->group(function () {
+    Route::middleware('role:user')->group(function () {
         Route::get('user/orders', [ApiUserController::class, 'getUserOrders']);
         Route::get('user/{id}/orders', [ApiUserController::class, 'getOrdersByUser']);
     });

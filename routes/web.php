@@ -10,7 +10,12 @@ use App\Http\Controllers\UserDetailsController;
 use Illuminate\Support\Facades\Route;
 
 // Store routes
-Route::get('/', [StoreController::class, 'index'])->name('store');
+Route::get('/', [StoreController::class, 'index'])->name('store.index');
+Route::get('/store/{id}', [StoreController::class, 'show'])->name('store.show');
+Route::post('/store/{id}/addProduct', [StoreController::class, 'addProduct'])->name('store.addProduct');
+Route::get('/stores', [StoreController::class, 'getStores'])->name('store.stores');
+Route::get('/store/create', [StoreController::class, 'create'])->name('store.create');
+Route::post('/store', [StoreController::class, 'store'])->name('store.store');
 
 Route::get('/dashboard', function () {
     return view('dashboard');
@@ -40,7 +45,6 @@ Route::middleware('auth')->group(function () {
         Route::post('/product/store', [ProductController::class, 'store'])->name('product.store');
         Route::get('/product/{id}/edit', [ProductController::class, 'edit'])->name('product.edit');
         Route::put('/product/{id}', [ProductController::class, 'update'])->name('product.update');
-
         Route::delete('/product/{id}', [ProductController::class, 'destroy'])->name('product.destroy');
     });
 
@@ -64,8 +68,8 @@ Route::middleware('auth')->group(function () {
     //order
     Route::get('/order', [OrderController::class, 'index'])->name('order.index');
     Route::post('/order/store', [OrderController::class, 'store'])->name('order.store');
-    Route::get('/order/{id}', [OrderController::class, 'show'])->name('order.show');
-    Route::post('/order/{id}/pay', [OrderController::class, 'pay'])->name('order.pay');
+    Route::get('/user/order/{id}', [OrderController::class, 'showUserOrder'])->name('order.showUserOrder');
+    Route::post('/user/order/{id}/pay', [OrderController::class, 'pay'])->name('order.pay');
 
     Route::middleware('role:orderManager')->group(function () {
         Route::get('/orders', [OrderController::class, 'getAllOrders'])->name('orders.index');

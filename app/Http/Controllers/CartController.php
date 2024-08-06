@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Cart;
 use App\Models\Order;
 use App\Models\Product;
+use App\Models\Store;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -30,13 +31,6 @@ class CartController extends Controller
         return view('cart.index', ['cartsWithProducts' => $cartsWithProducts]);
     }
 
-    //show create page
-    public function create(): View
-    {
-        return view('cart.create');
-    }
-
-    //store details
     public function store(Request $request): RedirectResponse
     {
         $user = Auth::user();
@@ -46,20 +40,13 @@ class CartController extends Controller
         //     'price' => ['required', 'integer'],
         //     'amount' => ['required', 'integer', 'digits:6'],
         // ]);
-
-        $cart = Cart::create([
+        Cart::create([
             'user_id' => $user->id,
             'product_id' => $request->product_id,
             'amount' => $request->amount,
         ]);
 
         return redirect(route('cart.index', absolute: false));
-    }
-
-    public function edit($id): View
-    {
-        $cart = Cart::find($id);
-        return view('cart.create', ['cart' => $cart]);
     }
 
     public function update($id, Request $request): RedirectResponse
@@ -88,13 +75,12 @@ class CartController extends Controller
     public function destroy($id): RedirectResponse
     {
         $cart = Cart::find($id);
-        
+
         Gate::authorize('delete', $cart);
         $cart->delete();
-        
+
         return redirect(route('cart.index', absolute: false));
     }
-
     public function addToCart(Request $request): RedirectResponse
     {
         $user = Auth::user();
@@ -105,11 +91,10 @@ class CartController extends Controller
         if ($duplicate_product) {
             $duplicate_product->amount += $request->amount;
             $duplicate_product->save();
-            return redirect()->route('store')->with('success', 'Product added to cart successfully!');
+            return redirect()->route('cart.index')->with('success', 'Product added to cart successfully!');
         }
 
-        $cartController = new CartController();
-        return $cartController->store($request);
+        return $this->store($request);
     }
     public function clearCart()
     {
@@ -121,13 +106,28 @@ class CartController extends Controller
         }
         return;
     }
+
     public function checkout(): RedirectResponse
     {
         $user = Auth::user();
         $carts = Cart::where('user_id', $user->id)->get();
+        
+        $store = Store::first();
 
         if ($carts->isEmpty()) {
-            return redirect()->route('store')->with('error', 'Your cart is empty.');
+            return redirect()->route('store.index')->with('error', 'Your cart is empty.');
+        }
+
+        foreach ($carts as $cart) {
+            $product = $cart->product;
+            $storeProduct = $store->products()->where('product_id', $product->id)->first();
+    
+            if ($storeProduct) {
+                $currentQuantity = $storeProduct->pivot->quantity;
+                if ($currentQuantity < $cart->amount) {
+                    return redirect()->route('store.index')->with('error', 'Not enough quantity for product: ' . $product->title);
+                }
+            }
         }
 
         $totalPrice = $carts->sum(function ($cart) {
@@ -141,11 +141,24 @@ class CartController extends Controller
         ]);
 
         foreach ($carts as $cart) {
-            $product = Product::find($cart->product_id);
+            $product = $cart->product;
+
             $order->products()->attach($cart->product_id, [
                 'amount' => $cart->amount,
                 'price' => $product->price,
             ]);
+
+            $storeProduct = $store->products()->where('product_id', $product->id)->first();
+
+            if ($storeProduct) {
+                $newQuantity = $storeProduct->pivot->quantity - $cart->amount;
+                $status = $newQuantity <= 0 ? 'OutOfStock' : ($newQuantity < 10 ? 'LowStock' : 'InStock');
+
+                $store->products()->updateExistingPivot($product->id, [
+                    'quantity' => $newQuantity,
+                    'status' => $status,
+                ]);
+            }
         }
         // Empty the user's cart
         $this->clearCart();

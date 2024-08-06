@@ -24,13 +24,20 @@ class OrderController extends Controller
         $orders = Order::all();
         return view('order.index', ['orders' => $orders]);
     }
-    
+    public function showUserOrder($id)
+    {
+        $user = Auth::user();
+        $order = $user->orders->where('id',$id)->first();
+        $methods = ['visa', 'paypal'];
+
+        return view('order.show', ['order' => $order, 'methods' => $methods, 'payment' => $order->payment]);
+    }
     public function show($id)
     {
         $order = Order::find($id);
         $methods = ['visa', 'paypal'];
 
-        return view('order.show', ['order'=>$order, 'methods'=>$methods,'payment'=>$order->payment]);
+        return view('order.show', ['order' => $order, 'methods' => $methods, 'payment' => $order->payment]);
     }
 
     public function destroy($id): RedirectResponse

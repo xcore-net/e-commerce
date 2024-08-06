@@ -20,7 +20,7 @@ return new class extends Migration
             $table->unsignedBigInteger('product_id');
             $table->unsignedBigInteger('payment_id')->nullable();
 
-            $table->foreign('product_id')->references('id')->on('products');
+            $table->foreign('product_id')->references('id')->on('store_products');
             $table->foreign('order_id')->references('id')->on('orders');
         });
     }

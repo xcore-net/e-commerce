@@ -30,7 +30,7 @@
                     </li>
                     @endforeach
                 </ul>
-                <form action="{{ route('order.show', $order->id) }}" method="GET">
+                <form action="{{ route('order.showUserOrder', $order->id) }}" method="GET">
                     @csrf
                     <button type="submit" class="btn btn-primary mt-3 float-right">Details</button>
                 </form>

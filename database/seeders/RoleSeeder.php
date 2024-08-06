@@ -40,7 +40,7 @@ class RoleSeeder extends Seeder
 
         $orderManager->givePermissionTo([
             'create-order',
-            'update-order',
+            // 'update-order',
             'delete-order',
             'view-all-order'
         ]);
