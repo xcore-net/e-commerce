@@ -37,7 +37,7 @@ class UserDetailController extends Controller
         $request->validate([
             'phone' => ['required','integer'],
             'address' => ['required','string'],
-            'type' => ['required', 'in:visa,pypal'] ,
+            'type' => ['required', 'in:visa,pypal'],
             'number'=> ['required','integer']
         ]);
 

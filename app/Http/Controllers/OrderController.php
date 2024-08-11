@@ -40,6 +40,7 @@ public function add()
     }
 
     $order->total = $total;
+   
     $order->created_at = Carbon::now();
     $order->save();
 

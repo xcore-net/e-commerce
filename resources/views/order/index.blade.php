@@ -40,6 +40,11 @@
                         
                     </li>
                 @endforeach
+
+                {{-- @foreach($carts as $cart)
+                <strong>Amount:</strong> {{ $carts->amount }}
+                @endforeach --}}
+
             </ul>
         </div>
     @endforeach

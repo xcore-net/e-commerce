@@ -5,7 +5,11 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\UserDetailController;
+use App\Http\Controllers\StoreProductController;
+
 use App\Models\Product;
+use App\Http\Controllers\StoreController; // Add this line
+
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -30,6 +34,9 @@ Route::middleware('auth')->group(function () {
 
 
     Route::middleware('role:admin|productManager')->group(function () {
+        
+        Route::get('/store', [StoreController::class, 'index'])->name('store.index');
+
 
         //product
         Route::get('/index_product', [ProductController::class, 'index'])->name('product.index');
@@ -56,6 +63,14 @@ Route::middleware('auth')->group(function () {
     Route::post('/userdetails/store', [UserDetailController::class, 'store'])->name('userDetails.store');
     Route::delete('/userdetails/delete', [UserDetailController::class, 'destroy'])->name('userDetails.destroy');
 
+//storeproduct
+Route::get('/storeproduct/index', [StoreProductController::class,'index'])->name('storeproduct.index');
+Route::get('/storeproduct/create', [StoreProductController::class,'create'])->name('storeproduct.create');
+Route::post('/storeproduct/store', [StoreProductController::class,'store'])->name('storeproduct.store');
+Route::delete('/storeproduct/delete/{product_id}', [StoreProductController::class,'destroy'])->name('storeproduct.destroy');
+Route::post('/storeproduct/update/{product_id}', [StoreProductController::class,'update'])->name('storeproduct.update');
+Route::get('/storeproduct/edit/{product_id}', [StoreProductController::class,'edit'])->name('storeproduct.edit');
+Route::get('/storeproduct/show/{product_id}', [ProductController::class,'show'])->name('storeproduct.show');
 
     
     //   cart

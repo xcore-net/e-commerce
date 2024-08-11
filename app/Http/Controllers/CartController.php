@@ -2,11 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\lowOfStock;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Cart;
 use App\Models\User;
+use App\Models\StoreProduct;
+use App\Models\Store;
+
 
 
 class CartController extends Controller
@@ -31,7 +35,7 @@ class CartController extends Controller
             }
             return $cart;
         });
-        // $products = $user->product->where('id', $cart->product_id)->get(); // Updated line
+        // $product = $user->product->where('id', $cart->product_id)->get(); // Updated line
 
         return view('cart.index', ['products' => $cartsWithProducts]);
     }
@@ -46,14 +50,14 @@ class CartController extends Controller
 
     public function add($product_id, Request $request)
     {
-
+        lowOfStock::dispatch('low of stock');
+        
+        $storeProduct = StoreProduct::where('product_id', $product_id)->first();
         $amount = $request->input('amount');
         //  dd($product_id);
         //  dd($request) ;
         $user = Auth::user();
         $carts = $user->carts;
-        // $products = $user->product()->where('product_id', $product_id)->first();
-
         $cart = $carts->where('product_id', $product_id)->first();
 
         // dd($cart);
@@ -61,6 +65,11 @@ class CartController extends Controller
 
             $cart->amount += $amount;
             $cart->save();
+            $storeProduct->quantity = $storeProduct->quantity - $amount; // طرح المبلغ من المنتج
+            $storeProduct->quantity <=0 ? $storeProduct->status="outOfStock":( $storeProduct->quantity > $storeProduct->limit ?  $storeProduct->status= " inStock" :$storeProduct->status = "lowStock");
+            $storeProduct->save();
+
+           
         } else {
 
             $cart = new Cart;
@@ -68,8 +77,22 @@ class CartController extends Controller
             $cart->product_id = $product_id;
             $cart->amount = $amount;
             $cart->save();
+            $storeProduct->quantity = $storeProduct->quantity - $cart->amount; // طرح المبلغ من المنتج
+            $storeProduct->save();
 
         }
+
+    
+     
+    // Assuming you have a ProductManagerNotification class
+    // $productManager = User::where('role', 'product_manager')->first(); // Adjust role as necessary
+    // if ($productManager) {
+    //     $productManager->notify(new notifications($storeProduct));
+    
+
+   
+    // }
+
 
         return redirect(route('cart.index'));
     }
