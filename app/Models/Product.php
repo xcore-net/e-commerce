@@ -28,9 +28,9 @@ class Product extends Model
         return $this->belongsToMany(Order::class, 'order_products')
             ->withPivot('amount', 'price');
     }
-    // public function stores(): BelongsToMany
-    // {
-    //     return $this->belongsToMany(Order::class, 'store_products')
-    //         ->withPivot('quantity','limit','status', 'price');
-    // }
+    public function stores(): BelongsToMany
+    {
+        return $this->belongsToMany(Order::class, 'store_products')
+            ->withPivot('quantity','limit','status', 'price');
+    }
 }

@@ -18,8 +18,8 @@
                 <ul class="list-group">
                     @foreach($stores as $store)
                         <li class="list-group-item">
-                            <strong>{{ $store->Name }}</strong><br>
-                            Location: {{ $store->Location }}<br>
+                            <strong>{{ $store->name }}</strong>id:{{$store->id}}<br>
+                            Location: {{ $store->location }}<br>
                         </li>
                     @endforeach
                 </ul>
