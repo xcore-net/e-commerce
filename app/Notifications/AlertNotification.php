@@ -22,7 +22,7 @@ class AlertNotification extends Notification implements ShouldQueue
     {
         $this->productCollection = $productCollection;
         $this->message =  "Product "
-            . $productCollection->get('product')->title . ' with id:gw '
+            . $productCollection->get('product')->title . ' with id: '
             . $productCollection->get('product')->id . ' is '
             . ($productCollection->get('product')->pivot->status == 'LowStock' ? 'on low stock' : ($this->productCollection->get('product')->pivot->status == 'OutOfStock' ? 'Out of Stock!' : '[Error]'));
     }
@@ -34,7 +34,7 @@ class AlertNotification extends Notification implements ShouldQueue
      */
     public function via(object $notifiable): array
     {
-        return ['mail', 'broadcast', 'database'];
+        return [ 'broadcast', 'database'];
     }
 
     /**
@@ -54,10 +54,10 @@ class AlertNotification extends Notification implements ShouldQueue
         ]);
     }
 
-    public function broadcastas()
-    {
-        return 'notification';
-    }
+    // public function broadcastAs()
+    // {
+    //     return 'notification';
+    // }
 
     /**
      * Get the array representation of the notification.

@@ -21,48 +21,6 @@
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
-    @auth
-    <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
-    <script>
-        // Enable pusher logging - don't include this in production
-        Pusher.logToConsole = true;
-
-        var pusher = new Pusher("e989e6aa79d7b9aa6ba9", {
-            cluster: "eu",
-            authEndpoint: '/broadcasting/auth',
-            auth: {
-                headers: {
-                    'X-CSRF-Token': '{{ csrf_token() }}'
-                }
-            }
-        });
-
-        // Subscribe to the private channel for the authenticated user
-
-
-        let channel = pusher.subscribe('private-App.Models.User.{{ Auth::user()->id }}');
-
-        // channel.bind('LowStock', function(data) {
-        //     alert(JSON.stringify(data));
-        // });
-
-        // channel.bind('OutOfStock', function(data) {
-        //     alert(JSON.stringify(data));
-        // });
-
-        channel.bind('notification', function(data) {
-            alert(JSON.stringify(data));
-
-            let count = parseInt(document.getElementById('notification-count').innerText);
-            document.getElementById('notification-count').innerText = count + 1;
-
-            let notificationList = document.getElementById('notification-list');
-            let listItem = document.createElement('li');
-            listItem.textContent = data.message;
-            notificationList.appendChild(listItem);
-        });
-    </script>
-    @endauth
 </head>
 
 <body class="font-sans antialiased">
@@ -83,6 +41,26 @@
             {{ $slot }}
         </main>
     </div>
+
+    @auth
+
+    <script defer>
+        document.addEventListener('DOMContentLoaded', () => {
+
+        Echo.private('App.Models.User.{{Auth::user()->id}}')
+            .notification((notification) => {
+                let count = parseInt(document.getElementById('notification-count').innerText);
+                document.getElementById('notification-count').innerText = count + 1;
+
+                let notificationList = document.getElementById('notification-list');
+                let listItem = document.createElement('li');
+                listItem.textContent = notification.message;
+                notificationList.appendChild(listItem);
+            });
+        })
+        console.log(window)
+    </script>
+    @endauth
 </body>
 
 </html>

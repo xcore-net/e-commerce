@@ -140,6 +140,11 @@ class StoreController extends Controller
                 $newQuantity = $storeProduct->pivot->quantity - $cart->amount;
                 $status = $newQuantity <= 0 ? 'OutOfStock' : ($newQuantity < 10 ? 'LowStock' : 'InStock');
 
+                $store->products()->updateExistingPivot($product->id, [
+                    'quantity' => $newQuantity,
+                    'status' => $status,
+                ]);
+                
                 if ($status == 'LowStock' || $status == 'OutOfStock') {
                     $users = User::role('productManager')->get();
 
@@ -155,10 +160,6 @@ class StoreController extends Controller
                     }
                 }
 
-                $store->products()->updateExistingPivot($product->id, [
-                    'quantity' => $newQuantity,
-                    'status' => $status,
-                ]);
             }
         }
         // Empty the user's cart
