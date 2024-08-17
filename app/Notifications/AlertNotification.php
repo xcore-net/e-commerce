@@ -22,9 +22,9 @@ class AlertNotification extends Notification implements ShouldQueue
     {
         $this->productCollection = $productCollection;
         $this->message =  "Product "
-            . $productCollection->get('product')->title . ' with id: '
-            . $productCollection->get('storeProduct_id') . ' is '
-            . ($productCollection->get('status') == 'LowStock' ? 'on low stock' : ($this->productCollection->get('status') == 'OutOfStock' ? 'Out of Stock!' : '[Error]'));
+            . $productCollection->get('product')->title . ' with id:gw '
+            . $productCollection->get('product')->id . ' is '
+            . ($productCollection->get('product')->pivot->status == 'LowStock' ? 'on low stock' : ($this->productCollection->get('product')->pivot->status == 'OutOfStock' ? 'Out of Stock!' : '[Error]'));
     }
 
     /**
@@ -44,7 +44,7 @@ class AlertNotification extends Notification implements ShouldQueue
     {
         return (new MailMessage)
             ->line($this->message)
-            ->action('View Product', url('/store/' . $this->productCollection->get('store_id') . '/product/' . $this->productCollection->get('storeProduct_id')));
+            ->action('View Product', url('/store/' . $this->productCollection->get('product')->pivot->store_id . '/product/' . $this->productCollection->get('product')->id));
     }
 
     public function toBroadcast($notifiable): BroadcastMessage

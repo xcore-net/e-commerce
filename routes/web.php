@@ -18,7 +18,7 @@ Route::get('/store/create', [StoreController::class, 'create'])->name('store.cre
 Route::post('/store', [StoreController::class, 'store'])->name('store.store');
 Route::get('/store/{id}', [StoreController::class, 'show'])->name('store.show');
 Route::post('/store/{id}/addProduct', [StoreController::class, 'addProduct'])->name('store.addProduct');
-Route::put('/store/{id}/product/{id}/stock', [StoreController::class, 'show'])->name('store.show');
+Route::put('/store/{store_id}/product/{product_id}/stock', [StoreController::class, 'show'])->name('store.product.show');
 
 Route::post('/cart/add', [StoreController::class, 'addToCart'])->name('cart.addToCart');
 Route::post('/checkout', [StoreController::class, 'checkout'])->name('cart.checkout');

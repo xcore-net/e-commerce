@@ -37,7 +37,6 @@ class StoreController extends Controller
             'location' => $request->location,
         ]);
     }
-
     public function show($id)
     {
         $store = Store::find($id);
@@ -45,7 +44,6 @@ class StoreController extends Controller
 
         return view('store.show', ['store' => $store, 'storeProducts' => $store->products, 'products' => $products]);
     }
-
     public function addProduct($id, Request $request)
     {
         $store = Store::find($id);
@@ -58,7 +56,6 @@ class StoreController extends Controller
             'status' => $request->quantity > $request->limit ? 'InStock' : 'LowStock'
         ]);
     }
-
     public function addToCart(Request $request): RedirectResponse
     {
         $user = Auth::user();
@@ -83,7 +80,7 @@ class StoreController extends Controller
             'product_id' => $request->product_id,
             'amount' => $request->amount,
         ]);
-      
+
         return redirect(route('cart.index', absolute: false));
     }
     public function clearCart()
@@ -96,7 +93,6 @@ class StoreController extends Controller
         }
         return;
     }
-
     public function checkout(): RedirectResponse
     {
         $user = Auth::user();
@@ -149,10 +145,9 @@ class StoreController extends Controller
 
                     $productCollection = collect([
                         'product' => $storeProduct,
-                        'status' => $storeProduct->pivot->status,
-                        'quantity' => $storeProduct->pivot->quantity,
-                        'storeProduct_id' => $storeProduct->pivot->id,
-                        'store_id' => $storeProduct->pivot->store_id,
+                        // 'status' => $storeProduct->pivot->status,
+                        // 'quantity' => $storeProduct->pivot->quantity,
+                        // 'store_id' => $storeProduct->pivot->store_id,
                     ]);
 
                     foreach ($users as $user) {

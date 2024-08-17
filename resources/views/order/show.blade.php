@@ -1,24 +1,28 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Order Details</title>
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body>
-    <div class="container mt-5">
-        <h2 class="text-center mb-4">Order Details</h2>
-        <div class="card mb-4">
-            <div class="card-header">
-                Order #{{ $order->id }} - Total Price: ${{ $order->total_price }}
-                <span class="badge badge-{{ $order->payment_id ? 'success' : 'danger' }} float-right">
-                    {{ $order->payment_id ? 'Paid' : 'Unpaid' }}
-                </span>
-            </div>
-            <div class="card-body">
-                <ul class="list-group">
-                    @foreach($order->products as $product)
+<x-app-layout>
+
+    <!DOCTYPE html>
+    <html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Order Details</title>
+        <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    </head>
+
+    <body>
+        <div class="container mt-5">
+            <h2 class="text-center mb-4">Order Details</h2>
+            <div class="card mb-4">
+                <div class="card-header">
+                    Order #{{ $order->id }} - Total Price: ${{ $order->total_price }}
+                    <span class="badge badge-{{ $order->payment_id ? 'success' : 'danger' }} float-right">
+                        {{ $order->payment_id ? 'Paid' : 'Unpaid' }}
+                    </span>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group">
+                        @foreach($order->products as $product)
                         <li class="list-group-item">
                             <div class="row">
                                 <div class="col-md-2">
@@ -32,9 +36,9 @@
                                 </div>
                             </div>
                         </li>
-                    @endforeach
-                </ul>
-                @if($order->payment_id)
+                        @endforeach
+                    </ul>
+                    @if($order->payment_id)
                     <h4 class="mt-4">Payment Details</h4>
                     <ul class="list-group">
                         <li class="list-group-item">
@@ -44,7 +48,7 @@
                             <strong>Date:</strong> {{ $payment->created_at->format('Y-m-d H:i:s') }}
                         </li>
                     </ul>
-                @else
+                    @else
                     <h4 class="mt-4">Payment Methods</h4>
                     <form action="{{ route('order.pay', $order->id) }}" method="POST">
                         @csrf
@@ -52,19 +56,21 @@
                             <label for="method">Select Payment Method:</label>
                             <select name="method" id="method" class="form-control">
                                 @foreach($methods as $method)
-                                    <option value="{{ $method }}">{{ ucfirst($method) }}</option>
+                                <option value="{{ $method }}">{{ ucfirst($method) }}</option>
                                 @endforeach
                             </select>
                         </div>
                         <button type="submit" class="btn btn-primary mt-3 float-right">Pay Now</button>
                     </form>
-                @endif
+                    @endif
+                </div>
             </div>
         </div>
-    </div>
 
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-</body>
-</html>
+        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    </body>
+
+    </html>
+</x-app-layout>

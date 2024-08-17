@@ -31,6 +31,6 @@ class Product extends Model
     public function stores(): BelongsToMany
     {
         return $this->belongsToMany(Order::class, 'store_products')
-            ->withPivot('quantity','limit','status', 'price');
+            ->withPivot('id','quantity','limit','status', 'price');
     }
 }
