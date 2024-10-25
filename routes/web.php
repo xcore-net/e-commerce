@@ -1,16 +1,18 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\NotifyController;
 use App\Http\Controllers\OrderController;
-use App\Http\Controllers\UserDetailController;
-use App\Http\Controllers\StoreProductController;
-
-use App\Models\Product;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StoreController; // Add this line
 
+use App\Http\Controllers\StoreProductController;
+use App\Http\Controllers\UserDetailController;
+
+use App\Models\Product;
 use Illuminate\Support\Facades\Route;
+
 
 Route::get('/', function () {
     $products=Product::all();
@@ -19,6 +21,7 @@ Route::get('/', function () {
 
 
 
+Route::get('/notify', [NotifyController::class, 'notify']);
 
 
 

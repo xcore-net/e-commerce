@@ -10,7 +10,7 @@
 //    use Illuminate\Foundation\Events\Dispatchable;
 //    use Illuminate\Queue\SerializesModels;
 
-//    class lowOfStock implements ShouldBroadcastNow
+//    class outOfStock implements ShouldBroadcastNow
 //    {
 //        use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -18,16 +18,16 @@
 
 //        public function __construct($message)
 //        {
-//            $this->message = "status:lowOfStock";
+//            $this->message = "status:outOfStock";
 //        }
 
 //        public function broadcastOn()
 //        {
-//            return new Channel('channel1');
+//            return new Channel('channel2');
 //        }
 
 //        public function broadcastAs()
 //        {
-//            return "myevent1";
+//            return "myevent2";
 //        }
 //    }

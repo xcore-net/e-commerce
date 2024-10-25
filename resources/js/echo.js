@@ -14,7 +14,12 @@ window.Echo = new Echo({
     enabledTransports: ['ws', 'wss'],
 });
 
-window.Echo.channel('channel1')
-    .listen('myevent1', (e) => {
+// window.Echo.channel('channel1')
+//     .listen('myevent1', (e) => {
+//         console.log(e.message);
+//     });
+    window.Echo.channel('channel2')
+    .listen('myevent2', (e) => {
         console.log(e.message);
     });
+  

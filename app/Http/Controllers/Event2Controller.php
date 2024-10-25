@@ -2,14 +2,14 @@
 
 //namespace App\Http\Controllers;
 
-// use Illuminate\Http\Request;
-// use App\Events\lowOfStock;
-// class Event1Controller extends Controller
+//use Illuminate\Http\Request;
+// use App\Events\outOfStock;
+// class Event2Controller extends Controller
 // {
 //     public function sendMessage(Request $request)
 // {
 //     $message = $request->input('message');
-//     event(new lowOfStock($message));
+//     event(new outOfStock($message));
 //     return response()->json(['status' => 'Message sent!']);
 // }
 // }

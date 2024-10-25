@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Events\lowOfStock;
+use App\Events\outOfStock;
+
+use App\Notifications\ProductManagerNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -50,7 +53,9 @@ class CartController extends Controller
 
     public function add($product_id, Request $request)
     {
-        lowOfStock::dispatch('low of stock');
+        //lowOfStock::dispatch('low of stock');
+        //outOfStock::dispatch('out of stock');
+
         
         $storeProduct = StoreProduct::where('product_id', $product_id)->first();
         $amount = $request->input('amount');
@@ -79,49 +84,27 @@ class CartController extends Controller
             $cart->save();
             $storeProduct->quantity = $storeProduct->quantity - $cart->amount; // طرح المبلغ من المنتج
             $storeProduct->save();
-
         }
 
-    
-     
-    // Assuming you have a ProductManagerNotification class
-    // $productManager = User::where('role', 'product_manager')->first(); // Adjust role as necessary
-    // if ($productManager) {
-    //     $productManager->notify(new notifications($storeProduct));
-    
+            if ($storeProduct->status == 'lowStock' || $storeProduct->status == 'outOfStock') {
+                $productManagers = User::role('productManager')->get();
+                // $productCollection = collect([
+                //     'product' => $storeProduct
+                // ]);
 
-   
-    // }
+                 foreach ($productManagers as $productManager){   
+                        $productManager->notify(new ProductManagerNotification($storeProduct));
+                 }
+               
+                 
+            
+                }
 
 
         return redirect(route('cart.index'));
+    
     }
 
 
-    // public function add(Request $request){
-//     $product_id = $request->input('product_id');
-//     $user_id = Auth::id(); 
-//     $amount = $request->input('amount');
 
-    //     $cart = Cart::where('user_id', $user_id)
-//                 ->where('product_id', $product_id)
-//                 ->first();
-//     if($cart)
-//     {
-//         $cart->update([
-//             'amount'=> $cart->amount + $amount
-//         ]);
-//     }
-//     else
-//     {
-//     $cart = new Cart;
-//     $cart->user_id = $user_id;
-//     $cart->product_id = $product_id;
-//     $cart->amount = $amount;
-
-    //     }       
-//     $cart->save(); 
-
-    //     return redirect(route('welcome'));
-// }
 }

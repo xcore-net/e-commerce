@@ -7,18 +7,49 @@
 
         <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
         <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
+        
+        <link rel="preconnect" href="https://fonts.bunny.net">
+        <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+        <!-- Include Bootstrap CSS -->
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+        <!-- Include jQuery -->
+        <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+        <!-- Include Bootstrap JS -->
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    
+        
         <script>
             // Enable pusher logging - don't include this in production
             Pusher.logToConsole = true;
     
-            var pusher = new Pusher('34046a91dab9d5e9b87e', {
-                cluster: 'ap2'
-            });
+            // var pusher = new Pusher('34046a91dab9d5e9b87e', {
+            //     cluster: 'ap2'
+            // });
+            // var channel = pusher.subscribe('channel1');
+            // channel.bind('myevent1', function(data) {
+            //     alert(JSON.stringify(data));
+            // });
     
-            var channel = pusher.subscribe('channel1');
-            channel.bind('myevent1', function(data) {
-                alert(JSON.stringify(data));
+            // var channel = pusher.subscribe('channel2');
+            // channel.bind('myevent2', function(data) {
+            //     alert(JSON.stringify(data));
+            // });
+            document.addEventListener('DOMContentLoaded',()=>{
+                Echo.private('App.Models.User.{{Auth::user()->id}}')
+            .notification((notification) => {
+                let count = parseInt(document.getElementById('notification-count').innerText);
+                document.getElementById('notification-count').innerText = count + 1;
+
+                let notificationList = document.getElementById('notification-list');
+                let listItem = document.createElement('li');
+                listItem.textContent = notification.message;
+                notificationList.appendChild(listItem);
             });
+        })
+
+        
+
         </script>
 
 
